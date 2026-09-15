@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>CoBuddy · UI prototype</title>
+<style>
+  :root{
+    --bg:#EDE7E0; --card:#FFFFFF; --ink:#1E2026; --muted:#8A8F98;
+    --coral:#FF7A59; --coralSoft:#FFE9E2; --line:#EFEAE4;
+    --dark:#12141A; --darkCard:#1C1F27; --darkMuted:#8E94A2;
+  }
+  *{box-sizing:border-box; -webkit-font-smoothing:antialiased}
+  body{margin:0; background:var(--bg); font-family:"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif; color:var(--ink);
+       display:flex; flex-wrap:wrap; gap:28px; padding:28px; align-items:flex-start}
+  .phone{width:375px; height:812px; background:var(--card); border-radius:34px; overflow:hidden; position:relative;
+         box-shadow:0 18px 44px rgba(20,18,16,.18); display:flex; flex-direction:column}
+  .sb{height:44px; display:flex; align-items:center; justify-content:space-between; padding:0 22px; font-size:12.5px; font-weight:600; color:var(--ink); flex:0 0 auto}
+  .sb .r{display:flex; gap:5px; align-items:center; font-size:11px}
+  .body{flex:1 1 auto; display:flex; flex-direction:column; padding:6px 20px 8px; overflow:hidden}
+  .tabbar{flex:0 0 auto; height:74px; border-top:1px solid var(--line); display:flex; padding-bottom:14px}
+  .tab{flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; font-size:10.5px; color:var(--muted)}
+  .tab.on{color:var(--coral); font-weight:700}
+  .tab .ic{font-size:19px; line-height:1}
+  .pill{display:inline-flex; align-items:center; gap:6px; background:var(--coralSoft); color:#D9502E; font-size:12px; font-weight:700;
+        padding:6px 12px; border-radius:999px}
+  h1{font-size:25px; margin:14px 0 6px; letter-spacing:-.3px; line-height:1.2}
+  .sub{color:var(--muted); font-size:13px; margin:0 0 16px; line-height:1.45}
+  .field{background:#F6F3EF; border:1px solid var(--line); border-radius:14px; padding:13px 14px; font-size:14px; color:var(--muted)}
+  .chips{display:flex; flex-wrap:wrap; gap:8px; margin:12px 0 0}
+  .chip{background:#F6F3EF; border:1px solid var(--line); border-radius:999px; padding:7px 13px; font-size:12.5px; font-weight:600}
+  .chip.on{background:var(--ink); color:#fff; border-color:var(--ink)}
+  .label{font-size:11.5px; font-weight:800; letter-spacing:.8px; color:var(--muted); text-transform:uppercase; margin:22px 0 10px}
+  .seg{display:flex; gap:8px}
+  .seg div{flex:1; text-align:center; padding:11px 0; border-radius:12px; background:#F6F3EF; font-size:13.5px; font-weight:700; border:1px solid var(--line)}
+  .seg div.on{background:var(--coral); color:#fff; border-color:var(--coral)}
+  .cta{margin-top:auto; margin-bottom:14px; background:var(--coral); color:#fff; text-align:center; padding:17px; border-radius:16px;
+       font-size:16px; font-weight:800; box-shadow:0 8px 20px rgba(255,122,89,.34)}
+  .meta{text-align:center; font-size:12px; color:var(--muted); margin:0 0 12px}
+  /* session (dark) */
+  .phone.dark{background:var(--dark)}
+  .phone.dark .sb,.phone.dark .ink{color:#F2F3F6}
+  .phone.dark .body{padding-top:0}
+  .ringWrap{position:relative; width:250px; height:250px; margin:14px auto 6px}
+  .ring svg{transform:rotate(-90deg)}
+  .ringTxt{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center}
+  .ringTxt .t{font-size:46px; font-weight:800; letter-spacing:-1px; color:#fff; font-variant-numeric:tabular-nums}
+  .ringTxt .s{font-size:12px; color:var(--darkMuted); margin-top:4px}
+  .blob{width:58px; height:58px; border-radius:50%; background:linear-gradient(150deg,#7BE0C8,#4FB8FF);
+        margin:0 auto; box-shadow:0 0 0 7px rgba(123,224,200,.14), 0 0 30px rgba(123,224,200,.28)}
+  .coName{text-align:center; font-size:14px; font-weight:700; color:#EDEFF3; margin-top:10px}
+  .coSub{text-align:center; font-size:12px; color:var(--darkMuted); margin-top:3px}
+  .ambient{text-align:center; font-size:13.5px; color:#C6CBD6; line-height:1.55; margin:20px 22px 0}
+  .sBtns{display:flex; gap:10px; margin:auto 0 30px}
+  .sBtn{flex:1; text-align:center; padding:15px; border-radius:15px; font-size:14.5px; font-weight:700}
+  .sBtn.o{border:1px solid #333843; color:#D7DBE3}
+  .sBtn.g{color:#7B8393}
+  .taskTag{text-align:center; font-size:12px; color:var(--darkMuted)}
+  /* done */
+  .tick{width:96px; height:96px; border-radius:50%; background:var(--coralSoft); margin:16px auto 0; display:flex; align-items:center; justify-content:center; font-size:44px}
+  .stat2{display:flex; gap:10px; margin-top:20px}
+  .statCard{flex:1; background:#F6F3EF; border-radius:14px; padding:13px; text-align:center}
+  .statCard b{display:block; font-size:19px; letter-spacing:-.4px}
+  .statCard span{font-size:11.5px; color:var(--muted)}
+  .moods{display:flex; gap:10px; margin-top:10px}
+  .mood{flex:1; text-align:center; padding:13px 0; border-radius:14px; background:#F6F3EF; border:1px solid var(--line); font-size:22px}
+  .mood.on{border-color:var(--coral); background:var(--coralSoft)}
+  /* companions */
+  .cc{display:flex; align-items:center; gap:12px; background:#F6F3EF; border:1px solid var(--line); border-radius:16px; padding:13px; margin-bottom:10px}
+  .cc .av{width:46px; height:46px; border-radius:50%; flex:0 0 auto}
+  .cc b{font-size:14.5px; display:block}
+  .cc span{font-size:12px; color:var(--muted)}
+  .cc .tag{margin-left:auto; font-size:11px; font-weight:800; color:#D9502E; background:var(--coralSoft); padding:5px 9px; border-radius:999px}
+  /* stats */
+  .bars{display:flex; align-items:flex-end; gap:11px; height:118px; margin-top:6px}
+  .bar{flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; gap:6px; height:100%}
+  .bar i{display:block; width:100%; border-radius:8px 8px 6px 6px; background:#E7E0D8}
+  .bar i.on{background:var(--coral)}
+  .bar em{font-size:10.5px; color:var(--muted); font-style:normal; font-weight:700}
+</style>
+</head>
+<body>
+
+<!-- ============ 1. HOME ============ -->
+<div class="phone" id="s1">
+  <div class="sb"><span>15:10</span><span class="r">●●● 〰 🔋</span></div>
+  <div class="body">
+    <div style="margin-top:6px"><span class="pill">☀️ Good afternoon</span></div>
+    <h1>What are you<br>working on?</h1>
+    <p class="sub">Name the task and pick a block. Someone will stay with you.</p>
+    <div class="field">e.g. Finish the report draft</div>
+    <div class="chips">
+      <span class="chip on">🧠 Deep work</span><span class="chip">📚 Study</span>
+      <span class="chip">🧹 Tidy up</span><span class="chip">✉️ Email</span>
+    </div>
+    <div class="label">Focus block</div>
+    <div class="seg"><div>15</div><div class="on">25</div><div>45</div><div>60</div></div>
+    <div class="label">Companion</div>
+    <div class="cc" style="margin:0">
+      <div class="av" style="background:linear-gradient(150deg,#7BE0C8,#4FB8FF)"></div>
+      <div><b>Nova · quiet company</b><span>Calm, no chatting, just present</span></div>
+      <span class="tag">CHANGE</span>
+    </div>
+    <p class="meta" style="margin:16px 0 0; line-height:1.5">No sign-up. Nothing is shared.<br>Sessions stay on your phone.</p>
+    <div class="cta">Start session</div>
+    <div class="meta">3 sessions this week · 2-day streak</div>
+    <div class="tabbar">
+      <div class="tab on"><span class="ic">◉</span>Home</div>
+      <div class="tab"><span class="ic">▮</span>Stats</div>
+      <div class="tab"><span class="ic">☺</span>Companions</div>
+      <div class="tab"><span class="ic">⚙</span>Settings</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 2. SESSION ============ -->
+<div class="phone dark" id="s2">
+  <div class="sb"><span>15:11</span><span class="r">●●● 〰 🔋</span></div>
+  <div class="body">
+    <div style="text-align:center; margin-top:6px">
+      <span class="pill" style="background:#22262F; color:#9BE7D2">● In session</span>
+    </div>
+    <div class="ringWrap">
+      <div class="ring">
+        <svg width="250" height="250">
+          <circle cx="125" cy="125" r="110" stroke="#252A34" stroke-width="14" fill="none"></circle>
+          <circle cx="125" cy="125" r="110" stroke="#4FB8FF" stroke-width="14" fill="none"
+                  stroke-linecap="round" stroke-dasharray="691" stroke-dashoffset="180"></circle>
+        </svg>
+      </div>
+      <div class="ringTxt"><span class="t">24:31</span><span class="s">remaining</span></div>
+    </div>
+    <div class="blob"></div>
+    <div class="coName">Nova is here with you</div>
+    <div class="coSub">quiet company · no notifications</div>
+    <div class="taskTag" style="margin-top:18px">Working on · Finish the report draft</div>
+    <p class="ambient">You don't have to finish everything.<br>Just stay 24 more minutes.</p>
+    <div class="sBtns">
+      <div class="sBtn o">Pause</div>
+      <div class="sBtn g">End early</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 3. DONE ============ -->
+<div class="phone" id="s3">
+  <div class="sb"><span>15:36</span><span class="r">●●● 〰 🔋</span></div>
+  <div class="body">
+    <div class="tick">✓</div>
+    <h1 style="text-align:center; margin-top:18px">Session complete</h1>
+    <p class="sub" style="text-align:center">Nova stayed the whole time. That counts.</p>
+    <div class="stat2">
+      <div class="statCard"><b>25:00</b><span>focused</span></div>
+      <div class="statCard"><b>3 🔥</b><span>day streak</span></div>
+      <div class="statCard"><b>1h 15m</b><span>today</span></div>
+    </div>
+    <div class="label">How did it go?</div>
+    <div class="moods">
+      <div class="mood">😌</div><div class="mood on">💪</div><div class="mood">🥱</div>
+    </div>
+    <div class="label">One line for later (optional)</div>
+    <div class="field">Hardest part was starting. Fine after 5 min.</div>
+    <div class="cta" style="margin-bottom:12px">Start another block</div>
+    <div class="meta" style="margin-bottom:30px">Back to home</div>
+  </div>
+</div>
+
+<!-- ============ 4. COMPANIONS ============ -->
+<div class="phone" id="s4">
+  <div class="sb"><span>15:40</span><span class="r">●●● 〰 🔋</span></div>
+  <div class="body">
+    <h1 style="margin-top:10px">Companions</h1>
+    <p class="sub">Different people need different company. Pick who shows up.</p>
+    <div class="cc">
+      <div class="av" style="background:linear-gradient(150deg,#7BE0C8,#4FB8FF)"></div>
+      <div><b>Nova</b><span>Quiet. Says nothing. Just stays.</span></div>
+      <span class="tag">ACTIVE</span>
+    </div>
+    <div class="cc">
+      <div class="av" style="background:linear-gradient(150deg,#FFB36B,#FF7A59)"></div>
+      <div><b>Coach Bo</b><span>Check-ins every 5 min. No excuses.</span></div>
+    </div>
+    <div class="cc">
+      <div class="av" style="background:linear-gradient(150deg,#FFD98E,#F7A23B)"></div>
+      <div><b>Sunny</b><span>Café hum + soft background noise.</span></div>
+    </div>
+    <div class="cc">
+      <div class="av" style="background:linear-gradient(150deg,#8E7BFF,#5B4BE0)"></div>
+      <div><b>Midnight</b><span>For 1am deadlines. Dim and calm.</span></div>
+    </div>
+    <p class="meta" style="margin-top:auto; margin-bottom:16px">2 of 6 companions unlocked</p>
+    <div class="tabbar">
+      <div class="tab"><span class="ic">◉</span>Home</div>
+      <div class="tab"><span class="ic">▮</span>Stats</div>
+      <div class="tab on"><span class="ic">☺</span>Companions</div>
+      <div class="tab"><span class="ic">⚙</span>Settings</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 5. STATS ============ -->
+<div class="phone" id="s5">
+  <div class="sb"><span>15:42</span><span class="r">●●● 〰 🔋</span></div>
+  <div class="body">
+    <h1 style="margin-top:10px">This week</h1>
+    <p class="sub">4h 05m focused · 12 sessions · longest 45 min</p>
+    <div class="bars">
+      <div class="bar"><i style="height:34%" class="on"></i><em>M</em></div>
+      <div class="bar"><i style="height:58%" class="on"></i><em>T</em></div>
+      <div class="bar"><i style="height:22%" class="on"></i><em>W</em></div>
+      <div class="bar"><i style="height:76%"></i><em>T</em></div>
+      <div class="bar"><i style="height:48%"></i><em>F</em></div>
+      <div class="bar"><i style="height:12%"></i><em>S</em></div>
+      <div class="bar"><i style="height:6%"></i><em>S</em></div>
+    </div>
+    <div class="stat2">
+      <div class="statCard"><b>3 🔥</b><span>current streak</span></div>
+      <div class="statCard"><b>7</b><span>best streak</span></div>
+    </div>
+    <div class="label" style="margin:16px 0 10px">Where your time went</div>
+    <div class="cc" style="margin-bottom:8px; padding:11px"><div class="av" style="width:36px;height:36px;background:linear-gradient(150deg,#FFB36B,#FF7A59)"></div><div><b>Deep work</b><span>2h 40m · 8 sessions</span></div></div>
+    <div class="cc" style="margin:0; padding:11px"><div class="av" style="width:36px;height:36px;background:linear-gradient(150deg,#7BE0C8,#4FB8FF)"></div><div><b>Study</b><span>1h 25m · 4 sessions</span></div></div>
+    <div style="height:14px"></div>
+    <div class="tabbar">
+      <div class="tab"><span class="ic">◉</span>Home</div>
+      <div class="tab on"><span class="ic">▮</span>Stats</div>
+      <div class="tab"><span class="ic">☺</span>Companions</div>
+      <div class="tab"><span class="ic">⚙</span>Settings</div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
